@@ -2,7 +2,7 @@
 *A Beginner-Friendly Guide to Using WSL on Windows*
 ---
 <p align="center">
-  <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" />
+  <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" width="400" />
 </p>
 ---
 
@@ -37,7 +37,7 @@ This means you can run Linux commands, tools, and applications alongside your Wi
 ---
 
 ### **WSL Versions**
-- **WSL 1**: Lightweight and fast, but doesn’t offer full system call compatibility.
+- **WSL 1**: Lightweight and fast, but doesn't offer full system call compatibility.
 - **WSL 2**: Uses a real Linux kernel with better performance and compatibility (recommended).
 
 ---
@@ -82,7 +82,7 @@ This shows all available distros you can install.
 ---
 
 ### **Switching Between WSL Versions**
-By default, WSL uses version 2. To manually switch a distro’s version:
+By default, WSL uses version 2. To manually switch a distro's version:
 ```bash
 wsl --set-version <DistroName> 2
 ```
@@ -140,7 +140,7 @@ Open File Explorer and type:
 ```
 \\wsl$
 ```
-You’ll see all installed Linux distributions and their file systems.
+You'll see all installed Linux distributions and their file systems.
 
 ---
 
@@ -329,7 +329,7 @@ This gives a list of all commands and options.
 
 ---
 
-Here’s **Part 3** of your complete WSL README guide — focused on **interoperability, file system access, and advanced configuration**.
+Here's **Part 3** of your complete WSL README guide — focused on **interoperability, file system access, and advanced configuration**.
 
 ---
 
@@ -494,7 +494,7 @@ This file controls:
 
 ## **Conclusion**
 
-You’ve now mastered:
+You've now mastered:
 - Installing and launching WSL
 - Managing multiple distros
 - Running commands across Linux and Windows
