@@ -11,6 +11,11 @@
 
 ---
 
+## 🔗 **Repository**
+[**Mastering-WSL by @atharvbyadav**](https://github.com/atharvbyadav/Mastering-WSL)
+
+---
+
 ## **Part 1: Introduction & Getting Started**
 
 ### **What is WSL?**
