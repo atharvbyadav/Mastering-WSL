@@ -1,6 +1,9 @@
 # **Mastering WSL (Windows Subsystem for Linux)**
 *A Beginner-Friendly Guide to Using WSL on Windows*
-
+---
+<p align="center">
+  <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" />
+</p>
 ---
 
 ## 🔗 **Repository**
