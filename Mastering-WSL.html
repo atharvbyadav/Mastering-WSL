@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering WSL - Windows Subsystem for Linux Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00ff9d;
+            --secondary-color: #00b8ff;
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --card-bg: #1a1a1a;
+            --code-bg: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 157, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 184, 255, 0.1) 0%, transparent 50%);
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .banner {
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .banner:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 2rem 0;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(0, 255, 157, 0.5); }
+            to { text-shadow: 0 0 20px rgba(0, 184, 255, 0.5); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        .toc {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc li {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .toc li:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .command-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .command-table th, .command-table td {
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .command-table th {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--primary-color);
+        }
+
+        .note {
+            background: rgba(0, 184, 255, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-color);
+            color: var(--bg-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .toc ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" class="banner">
+            <h1>Mastering WSL</h1>
+            <p class="subtitle">A Beginner-Friendly Guide to Using WSL on Windows</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#part1"><i class="fas fa-terminal"></i> Part 1: Introduction & Getting Started</a></li>
+                <li><a href="#part2"><i class="fas fa-cogs"></i> Part 2: Managing WSL Distros & Configuration</a></li>
+                <li><a href="#part3"><i class="fas fa-code"></i> Part 3: Interoperability & Advanced Tips</a></li>
+            </ul>
+        </div>
+
+        <div id="part1" class="section">
+            <h2>Part 1: Introduction & Getting Started</h2>
+            
+            <h3>What is WSL?</h3>
+            <p>WSL (Windows Subsystem for Linux) is a compatibility layer developed by Microsoft that allows you to run a GNU/Linux environment directly on Windows—without the need for a traditional virtual machine or dual-boot setup.</p>
+            <p>This means you can run Linux commands, tools, and applications alongside your Windows software, all on the same computer.</p>
+
+            <h3>Why Use WSL?</h3>
+            <ul>
+                <li>Run <strong>Linux development tools</strong> (e.g., <code>bash</code>, <code>gcc</code>, <code>apt</code>, <code>git</code>) natively on Windows.</li>
+                <li>Use <strong>both Windows and Linux applications</strong> side-by-side.</li>
+                <li>Avoid using heavy virtual machines or dual-booting.</li>
+                <li>Ideal for web development, system administration, scripting, and learning Linux.</li>
+            </ul>
+
+            <h3>WSL Versions</h3>
+            <ul>
+                <li><strong>WSL 1</strong>: Lightweight and fast, but doesn't offer full system call compatibility.</li>
+                <li><strong>WSL 2</strong>: Uses a real Linux kernel with better performance and compatibility (recommended).</li>
+            </ul>
+
+            <h3>Installing WSL (The Easy Way)</h3>
+            <p>For Windows 10 (2004+) or Windows 11:</p>
+            <ol>
+                <li>Open <strong>PowerShell as Administrator</strong></li>
+                <li>Run the following command:
+                    <pre><code>wsl --install</code></pre>
+                </li>
+                <li><strong>Restart your computer</strong> if prompted</li>
+                <li>On reboot, a terminal window will launch asking you to set up your <strong>Linux username and password</strong></li>
+            </ol>
+
+            <div class="note">
+                <p>This installs WSL and sets <strong>WSL 2</strong> as the default version. It also installs <strong>Ubuntu</strong> as the default Linux distribution.</p>
+            </div>
+        </div>
+
+        <div id="part2" class="section">
+            <h2>Part 2: Managing WSL Distros and System Configuration</h2>
+
+            <h3>Listing Installed Distros</h3>
+            <p>To see all the Linux distributions you have installed:</p>
+            <pre><code>wsl --list</code></pre>
+            <p>or</p>
+            <pre><code>wsl -l</code></pre>
+
+            <h3>Setting a Default Distro</h3>
+            <p>If you use one distro more than others, make it the default:</p>
+            <pre><code>wsl --set-default &lt;DistroName&gt;</code></pre>
+
+            <div class="warning">
+                <p><strong>Warning:</strong> Uninstalling a distro permanently deletes the Linux file system for that distro!</p>
+            </div>
+        </div>
+
+        <div id="part3" class="section">
+            <h2>Part 3: Interoperability, File Access & Advanced WSL Configuration</h2>
+
+            <h3>Accessing Windows Files from Linux (WSL)</h3>
+            <p>Inside your WSL terminal, Windows drives are mounted under <code>/mnt/</code>.</p>
+
+            <table class="command-table">
+                <tr>
+                    <th>Action</th>
+                    <th>Command</th>
+                </tr>
+                <tr>
+                    <td>Navigate to C:\Users\YourName\Downloads</td>
+                    <td><code>cd /mnt/c/Users/YourName/Downloads</code></td>
+                </tr>
+                <tr>
+                    <td>List contents of D: drive</td>
+                    <td><code>ls /mnt/d</code></td>
+                </tr>
+            </table>
+
+            <h3>Advanced Configuration Files</h3>
+            <p>WSL supports two config files for custom behavior:</p>
+
+            <h4>Global Config: .wslconfig</h4>
+            <p>Location: <code>C:\Users\&lt;YourWindowsUsername&gt;\.wslconfig</code></p>
+            <p>This file affects <strong>all WSL 2</strong> distributions.</p>
+
+            <pre><code>[wsl2]
+memory=4GB
+processors=2
+swap=2GB
+localhostForwarding=true</code></pre>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation to sections when they come into view
+        const sections = document.querySelectorAll('.section');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
