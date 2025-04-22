@@ -3,16 +3,16 @@
 
 ---
 
+## 🔗 **Repository**
+[**Mastering-WSL by @atharvbyadav**](https://github.com/atharvbyadav/Mastering-WSL)
+
+---
+
 ## Table of Contents
 
 1. [Introduction & Getting Started](#part-1-introduction--getting-started)  
 2. [Managing WSL Distros & Configuration](#part-2-managing-wsl-distros-and-system-configuration)  
 3. [File Access, Interoperability & Advanced Tips](#part-3-interoperability-file-access--advanced-wsl-configuration)
-
----
-
-## 🔗 **Repository**
-[**Mastering-WSL by @atharvbyadav**](https://github.com/atharvbyadav/Mastering-WSL)
 
 ---
 
