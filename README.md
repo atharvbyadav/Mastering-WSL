@@ -320,3 +320,182 @@ wsl --help
 This gives a list of all commands and options.
 
 ---
+
+Here’s **Part 3** of your complete WSL README guide — focused on **interoperability, file system access, and advanced configuration**.
+
+---
+
+# **Part 3: Interoperability, File Access & Advanced WSL Configuration**
+
+---
+
+## **1. Accessing Windows Files from Linux (WSL)**
+
+Inside your WSL terminal, Windows drives are mounted under `/mnt/`.
+
+### Examples:
+| Action | Command |
+|--------|---------|
+| Navigate to `C:\Users\YourName\Downloads` | `cd /mnt/c/Users/YourName/Downloads` |
+| List contents of D: drive | `ls /mnt/d` |
+
+---
+
+## **2. Accessing WSL Files from Windows**
+
+To explore your WSL file system through Windows File Explorer:
+
+1. Press `Win + R`
+2. Type:  
+   ```
+   \\wsl$
+   ```
+3. Hit Enter
+
+This opens a network-style view of all installed Linux distros. You can drag/drop files in and out from here.
+
+---
+
+## **3. Running Linux Commands from Windows (PowerShell or CMD)**
+
+You can execute Linux commands directly from a Windows terminal using:
+
+```bash
+wsl <linux-command>
+```
+
+### Examples:
+```bash
+wsl ls -la
+wsl cat /etc/os-release
+```
+
+To run a Linux command in a specific distro:
+```bash
+wsl -d <DistroName> <command>
+```
+
+---
+
+## **4. Running Windows Programs from Linux (WSL)**
+
+Inside WSL, you can launch Windows apps using their `.exe` names.
+
+### Examples:
+```bash
+notepad.exe
+code.exe            # Opens VS Code
+explorer.exe .      # Opens current directory in File Explorer
+```
+
+You can also use Windows paths in commands, just prefix them with `/mnt/`:
+
+```bash
+cat /mnt/c/Users/YourName/Desktop/note.txt
+```
+
+---
+
+## **5. Advanced Configuration Files**
+
+WSL supports two config files for custom behavior:
+
+---
+
+### **A. Global Config: `.wslconfig`**
+Location:  
+`C:\Users\<YourWindowsUsername>\.wslconfig`
+
+This file affects **all WSL 2** distributions.
+
+#### Example `.wslconfig`:
+```ini
+[wsl2]
+memory=4GB
+processors=2
+swap=2GB
+localhostForwarding=true
+```
+
+| Option | Description |
+|--------|-------------|
+| `memory` | Max RAM WSL can use |
+| `processors` | Number of CPU cores |
+| `swap` | Swap file size |
+| `localhostForwarding` | Enables Windows to Linux networking |
+
+> After editing this file, restart WSL:
+```bash
+wsl --shutdown
+```
+
+---
+
+### **B. Per-Distro Config: `wsl.conf`**
+Location:  
+Inside each distro at `/etc/wsl.conf`
+
+#### Example `wsl.conf`:
+```ini
+[automount]
+enabled = true
+root = /mnt/
+options = "metadata,umask=22,fmask=11"
+
+[network]
+generateResolvConf = false
+```
+
+This file controls:
+- How drives are mounted
+- File permission behavior
+- Network settings
+
+> Restart the WSL distro after editing this config.
+
+---
+
+## **6. Tips & Best Practices**
+
+- **Use WSL 2** unless you have specific needs for WSL 1.
+- **Keep backups** of your important Linux distros using `--export`.
+- Use **VS Code with WSL** (`code .`) for full-featured Linux dev on Windows.
+- Run `sudo apt update && sudo apt upgrade` frequently to keep Linux packages updated.
+- Avoid editing Linux files using Windows tools directly (use `/mnt/` instead).
+
+---
+
+## **7. Troubleshooting Common Issues**
+
+| Problem | Solution |
+|--------|----------|
+| WSL not launching | Restart computer or run `wsl --shutdown` |
+| File permission errors | Check mount options in `wsl.conf` |
+| Can't access Windows files | Try navigating to `/mnt/c/Users/` |
+| WSL commands not recognized | Make sure Windows features are enabled (see Part 1) |
+
+---
+
+## **Want More?**
+
+- [Official WSL Docs](https://learn.microsoft.com/en-us/windows/wsl/)
+- [WSL GitHub Repo](https://github.com/microsoft/WSL)
+- [WSL Issues & Discussions](https://github.com/microsoft/WSL/issues)
+
+---
+
+## **Conclusion**
+
+You’ve now mastered:
+- Installing and launching WSL
+- Managing multiple distros
+- Running commands across Linux and Windows
+- Configuring WSL to match your system and workflow
+
+This guide is made to be saved, starred and shared. Happy coding!
+
+---
+
+## Made with love for learners & devs.
+
+---
