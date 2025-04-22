@@ -2,7 +2,7 @@
 *A Beginner-Friendly Guide to Using WSL on Windows*
 ---
 <p align="center">
-  <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" width="500" />
+  <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" width="600" />
 </p>
 
 ## 🔗 **Repository**
