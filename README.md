@@ -135,3 +135,188 @@ Open File Explorer and type:
 You’ll see all installed Linux distributions and their file systems.
 
 ---
+
+# **Part 2: Managing WSL Distros and System Configuration**
+
+In this section, you'll learn how to manage your installed Linux distributions on WSL and customize your setup. Perfect for keeping things clean, organized, and optimized!
+
+---
+
+## **1. Listing Installed Distros**
+
+To see all the Linux distributions you have installed:
+
+```bash
+wsl --list
+```
+or
+```bash
+wsl -l
+```
+
+### Example Output:
+```
+Windows Subsystem for Linux Distributions:
+Ubuntu (Default)
+Debian
+Kali-Linux
+```
+
+To see which ones are currently **running**:
+
+```bash
+wsl --list --running
+```
+
+To see versions (WSL 1 or 2) of each installed distro:
+
+```bash
+wsl -l -v
+```
+
+---
+
+## **2. Setting a Default Distro**
+
+If you use one distro more than others, make it the default:
+
+```bash
+wsl --set-default <DistroName>
+```
+
+### Example:
+```bash
+wsl --set-default Debian
+```
+
+Now, running just `wsl` will launch Debian.
+
+---
+
+## **3. Uninstalling a Distro**
+
+To remove (unregister) a distro and **delete all its data**:
+
+```bash
+wsl --unregister <DistroName>
+```
+
+### Example:
+```bash
+wsl --unregister Ubuntu
+```
+
+> **Warning:** This permanently deletes the Linux file system for that distro!
+
+---
+
+## **4. Exporting and Backing Up a Distro**
+
+To create a backup of your entire Linux distro:
+
+```bash
+wsl --export <DistroName> <PathToFile.tar>
+```
+
+### Example:
+```bash
+wsl --export Ubuntu ubuntu-backup.tar
+```
+
+This file can be stored and later restored.
+
+---
+
+## **5. Importing a Distro from Backup**
+
+To import your saved distro to a new location:
+
+```bash
+wsl --import <NewDistroName> <InstallLocation> <BackupFile.tar>
+```
+
+### Example:
+```bash
+wsl --import UbuntuBackup C:\WSL\Ubuntu\ ubuntu-backup.tar
+```
+
+---
+
+## **6. Changing WSL Version (1 or 2)**
+
+You can choose which version each distro uses:
+
+```bash
+wsl --set-version <DistroName> <1|2>
+```
+
+### Example:
+```bash
+wsl --set-version Kali-Linux 2
+```
+
+To set **WSL 2** as the default for all new installs:
+
+```bash
+wsl --set-default-version 2
+```
+
+---
+
+## **7. Shutting Down and Terminating**
+
+- **Shut down all WSL instances:**
+  ```bash
+  wsl --shutdown
+  ```
+
+- **Terminate a specific distro:**
+  ```bash
+  wsl --terminate <DistroName>
+  ```
+
+This is useful if something hangs or you want to free up resources.
+
+---
+
+## **8. Checking System Configuration**
+
+Run this to see:
+- Default distro
+- Default version
+- Kernel version
+- Whether WSL is running
+
+```bash
+wsl --status
+```
+
+---
+
+## **9. Updating the WSL Kernel**
+
+Microsoft occasionally updates the WSL 2 kernel. To update:
+
+```bash
+wsl --update
+```
+
+If something breaks and you want to roll back:
+
+```bash
+wsl --update rollback
+```
+
+---
+
+## **10. Full Help Command**
+
+To see everything WSL can do, use:
+
+```bash
+wsl --help
+```
+
+This gives a list of all commands and options.
+
+---
