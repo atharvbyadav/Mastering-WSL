@@ -209,14 +209,83 @@
         pre {
             background: var(--code-bg);
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             overflow-x: auto;
             margin: 1rem 0;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
 
-        pre code {
-            background: none;
-            padding: 0;
+        pre:hover {
+            border-color: rgba(0, 255, 157, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            color: var(--primary-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-button:hover {
+            background: rgba(0, 255, 157, 0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 157, 0.3);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 255, 157, 0.2);
+        }
+
+        .copy-button.copied {
+            background: rgba(0, 255, 157, 0.3);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .copy-button i {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .copy-button:hover i {
+            transform: scale(1.1);
+        }
+
+        .copy-button.copied i {
+            color: var(--primary-color);
+            animation: checkmark 0.3s ease;
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .command-table {
@@ -1058,6 +1127,31 @@ generateResolvConf = false</code></pre>
             section.style.transform = 'translateY(20px)';
             section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             observer.observe(section);
+        });
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach((pre) => {
+            const button = document.createElement('button');
+            button.className = 'copy-button';
+            button.innerHTML = '<i class="far fa-copy"></i> Copy Code';
+            button.title = 'Copy to clipboard';
+            
+            button.addEventListener('click', async () => {
+                const code = pre.querySelector('code').textContent;
+                try {
+                    await navigator.clipboard.writeText(code);
+                    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="far fa-copy"></i> Copy Code';
+                        button.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                }
+            });
+            
+            pre.appendChild(button);
         });
     </script>
 </body>
