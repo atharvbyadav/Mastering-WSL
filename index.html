@@ -36,10 +36,11 @@
 
         header {
             text-align: center;
-            padding: 4rem 0;
+            padding: 2rem 0;
             background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
             position: relative;
             overflow: hidden;
+            margin-bottom: 2rem;
         }
 
         header::before {
@@ -61,21 +62,34 @@
             100% { transform: scale(1); }
         }
 
-        .banner {
-            max-width: 600px;
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
             margin: 0 auto;
-            border-radius: 10px;
+            padding: 0 2rem;
+        }
+
+        .banner {
+            max-width: 100%;
+            width: 600px;
+            height: auto;
+            margin: 0 auto 1.5rem;
+            border-radius: 15px;
             box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
             transition: transform 0.3s ease;
+            display: block;
+            object-fit: contain;
         }
 
         .banner:hover {
             transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.3);
         }
 
         h1 {
-            font-size: 3rem;
-            margin: 2rem 0;
+            font-size: 2.5rem;
+            margin: 1rem 0;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -88,9 +102,9 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #aaa;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .toc {
@@ -400,12 +414,40 @@
                 padding: 1rem;
             }
 
+            header {
+                padding: 1.5rem 0;
+            }
+
+            .banner {
+                width: 90%;
+                max-width: 400px;
+            }
+
             h1 {
                 font-size: 2rem;
             }
 
+            .subtitle {
+                font-size: 1rem;
+            }
+
             .toc ul {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem 0;
+            }
+
+            .banner {
+                width: 95%;
+                max-width: 300px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
             }
         }
 
@@ -500,7 +542,7 @@
 </head>
 <body>
     <header>
-        <div class="container">
+        <div class="header-content">
             <img src="https://raw.githubusercontent.com/atharvbyadav/Mastering-WSL/main/banner.png" alt="Mastering WSL" class="banner">
             <h1>Mastering WSL</h1>
             <p class="subtitle">A Beginner-Friendly Guide to Using WSL on Windows</p>
@@ -534,7 +576,7 @@
             <h3>What is WSL?</h3>
             <p>WSL (Windows Subsystem for Linux) is a compatibility layer developed by Microsoft that allows you to run a GNU/Linux environment directly on Windows—without the need for a traditional virtual machine or dual-boot setup.</p>
             <p>With WSL, you can execute Linux commands, use open-source tools, and even run Linux applications side-by-side with your Windows workflow.</p>
-
+        
             <h3>Why Use WSL?</h3>
             <ul>
                 <li>Run <strong>Linux development tools</strong> (e.g., <code>bash</code>, <code>gcc</code>, <code>apt</code>, <code>git</code>) natively on Windows.</li>
@@ -542,13 +584,13 @@
                 <li>Avoid using heavy virtual machines or dual-booting.</li>
                 <li>Ideal for web development, system administration, scripting, and learning Linux.</li>
             </ul>
-
+        
             <h3>WSL Versions</h3>
             <ul>
                 <li><strong>WSL 1</strong>: Lightweight and fast, but doesn't offer full system call compatibility.</li>
                 <li><strong>WSL 2</strong>: Uses a real Linux kernel with better performance and compatibility (recommended).</li>
             </ul>
-
+        
             <h3>Installing WSL (The Easy Way)</h3>
             <p>For Windows 10 (2004+) or Windows 11:</p>
             <ol>
@@ -559,11 +601,11 @@
                 <li><strong>Restart your computer</strong> if prompted</li>
                 <li>On reboot, a terminal window will launch asking you to set up your <strong>Linux username and password</strong></li>
             </ol>
-
+        
             <div class="note">
                 <p>This installs WSL and sets <strong>WSL 2</strong> as the default version. It also installs <strong>Ubuntu</strong> as the default Linux distribution.</p>
             </div>
-
+        
             <h3>Installing a Specific Linux Distro</h3>
             <p>If you want a different distribution (like Debian, Kali Linux, etc.), run:</p>
             <pre><code>wsl --install -d &lt;DistroName&gt;</code></pre>
@@ -668,7 +710,7 @@ Kali-Linux</code></pre>
             <div class="warning">
                 <p><strong>Warning:</strong> This permanently deletes the Linux file system for that distro!</p>
             </div>
-
+        
             <h3>Exporting and Backing Up a Distro</h3>
             <p>To create a backup of your entire Linux distro:</p>
             <pre><code>wsl --export &lt;DistroName&gt; &lt;PathToFile.tar&gt;</code></pre>
@@ -841,7 +883,7 @@ generateResolvConf = false</code></pre>
             <div class="note">
                 <p>Restart the WSL distro after editing this config.</p>
             </div>
-
+        
             <h3>6. Tips & Best Practices</h3>
             <ul>
                 <li><strong>Use WSL 2</strong> unless you have specific needs for WSL 1.</li>
@@ -850,7 +892,7 @@ generateResolvConf = false</code></pre>
                 <li>Run <code>sudo apt update && sudo apt upgrade</code> frequently to keep Linux packages updated.</li>
                 <li>Avoid editing Linux files using Windows tools directly (use <code>/mnt/</code> instead).</li>
             </ul>
-
+        
             <h3>7. Troubleshooting Common Issues</h3>
             <table class="command-table">
                 <tr>
