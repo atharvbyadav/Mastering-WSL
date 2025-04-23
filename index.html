@@ -408,6 +408,94 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .resource-card {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .resource-card:hover::before {
+            opacity: 1;
+        }
+
+        .resource-icon {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover .resource-icon {
+            transform: scale(1.2);
+        }
+
+        .resource-content {
+            flex: 1;
+        }
+
+        .resource-content h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .resource-content p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .resource-arrow {
+            color: var(--secondary-color);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover .resource-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -435,8 +523,8 @@
             <h2>Table of Contents</h2>
             <ul>
                 <li><a href="#part1"><i class="fas fa-terminal"></i> Part 1: Introduction & Getting Started</a></li>
-                <li><a href="#part2"><i class="fas fa-cogs"></i> Part 2: Managing WSL Distros & Configuration</a></li>
-                <li><a href="#part3"><i class="fas fa-code"></i> Part 3: Daily WSL Usage & Cool Tricks</a></li>
+                <li><a href="#part2"><i class="fas fa-cogs"></i> Part 2: Managing WSL Distros and System Configuration</a></li>
+                <li><a href="#part3"><i class="fas fa-code"></i> Part 3: Interoperability, File Access & Advanced WSL Configuration</a></li>
             </ul>
         </div>
 
@@ -444,152 +532,400 @@
             <h2>Part 1: Introduction & Getting Started</h2>
             
             <h3>What is WSL?</h3>
-            <p>WSL (Windows Subsystem for Linux) is a compatibility layer developed by Microsoft that enables you to run a GNU/Linux environment directly on Windows—without needing a virtual machine or dual-boot setup.</p>
+            <p>WSL (Windows Subsystem for Linux) is a compatibility layer developed by Microsoft that allows you to run a GNU/Linux environment directly on Windows—without the need for a traditional virtual machine or dual-boot setup.</p>
             <p>With WSL, you can execute Linux commands, use open-source tools, and even run Linux applications side-by-side with your Windows workflow.</p>
-        
+
             <h3>Why Use WSL?</h3>
             <ul>
-                <li>Run <strong>Linux-native tools</strong> like <code>bash</code>, <code>git</code>, <code>apt</code>, and <code>gcc</code> natively on Windows.</li>
-                <li>Develop in a Linux environment while still accessing Windows files and software.</li>
-                <li>Lightweight alternative to full virtual machines or dual-booting.</li>
-                <li>Ideal for developers, sysadmins, and those learning Linux.</li>
+                <li>Run <strong>Linux development tools</strong> (e.g., <code>bash</code>, <code>gcc</code>, <code>apt</code>, <code>git</code>) natively on Windows.</li>
+                <li>Use <strong>both Windows and Linux applications</strong> side-by-side.</li>
+                <li>Avoid using heavy virtual machines or dual-booting.</li>
+                <li>Ideal for web development, system administration, scripting, and learning Linux.</li>
             </ul>
-        
-            <h3>WSL 1 vs WSL 2</h3>
+
+            <h3>WSL Versions</h3>
             <ul>
-                <li><strong>WSL 1:</strong> Uses a translation layer; faster startup and better for simple tasks.</li>
-                <li><strong>WSL 2:</strong> Full Linux kernel inside a lightweight VM; better performance and compatibility (recommended).</li>
+                <li><strong>WSL 1</strong>: Lightweight and fast, but doesn't offer full system call compatibility.</li>
+                <li><strong>WSL 2</strong>: Uses a real Linux kernel with better performance and compatibility (recommended).</li>
             </ul>
-        
-            <h3>Installing WSL (Recommended Method)</h3>
+
+            <h3>Installing WSL (The Easy Way)</h3>
+            <p>For Windows 10 (2004+) or Windows 11:</p>
             <ol>
                 <li>Open <strong>PowerShell as Administrator</strong></li>
-                <li>Run:
+                <li>Run the following command:
                     <pre><code>wsl --install</code></pre>
                 </li>
-                <li>Restart your system if prompted.</li>
-                <li>Once installed, you'll be asked to create a Linux username and password.</li>
+                <li><strong>Restart your computer</strong> if prompted</li>
+                <li>On reboot, a terminal window will launch asking you to set up your <strong>Linux username and password</strong></li>
             </ol>
-        
+
             <div class="note">
-                <p><strong>Note:</strong> This command sets WSL 2 as the default and installs Ubuntu as the default distro.</p>
+                <p>This installs WSL and sets <strong>WSL 2</strong> as the default version. It also installs <strong>Ubuntu</strong> as the default Linux distribution.</p>
             </div>
-        
-            <h3>Checking WSL Version</h3>
-            <pre><code>wsl --list --verbose</code></pre>
-            <p>This will display installed distros and whether they're using WSL 1 or WSL 2.</p>
-        
-            <h3>Set WSL 2 as Default (Optional)</h3>
-            <pre><code>wsl --set-default-version 2</code></pre>
-            <p>Ensure future installations use WSL 2.</p>
-        
-            <h3>Installing Specific Distributions</h3>
+
+            <h3>Installing a Specific Linux Distro</h3>
+            <p>If you want a different distribution (like Debian, Kali Linux, etc.), run:</p>
+            <pre><code>wsl --install -d &lt;DistroName&gt;</code></pre>
+            <p>Example:</p>
             <pre><code>wsl --install -d Debian</code></pre>
-            <p>Replace <code>Debian</code> with the distro name of your choice (e.g., <code>Ubuntu</code>, <code>Kali-Linux</code>, etc).</p>
+
+            <h3>Checking Installed Distros</h3>
+            <pre><code>wsl --list --online</code></pre>
+            <p>This shows all available distros you can install.</p>
+
+            <h3>Switching Between WSL Versions</h3>
+            <p>By default, WSL uses version 2. To manually switch a distro's version:</p>
+            <pre><code>wsl --set-version &lt;DistroName&gt; 2</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --set-version Ubuntu 2</code></pre>
+
+            <h3>Setting Default Version for New Installs</h3>
+            <pre><code>wsl --set-default-version 2</code></pre>
+
+            <h3>Using WSL for the First Time</h3>
+            <p>To launch your installed Linux distro:</p>
+            <pre><code>wsl</code></pre>
+            <p>Or to launch a specific one:</p>
+            <pre><code>wsl -d &lt;DistroName&gt;</code></pre>
+
+            <h3>Useful First Commands (Inside WSL Terminal)</h3>
+            <table class="command-table">
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>ls</code></td>
+                    <td>Lists files in the current directory.</td>
+                </tr>
+                <tr>
+                    <td><code>cd</code></td>
+                    <td>Changes directory.</td>
+                </tr>
+                <tr>
+                    <td><code>pwd</code></td>
+                    <td>Prints the current directory path.</td>
+                </tr>
+                <tr>
+                    <td><code>mkdir &lt;dir&gt;</code></td>
+                    <td>Creates a new directory.</td>
+                </tr>
+                <tr>
+                    <td><code>sudo apt update && sudo apt upgrade</code></td>
+                    <td>Updates your Linux packages.</td>
+                </tr>
+                <tr>
+                    <td><code>exit</code></td>
+                    <td>Exits the WSL terminal and returns to Windows.</td>
+                </tr>
+            </table>
+
+            <h3>Accessing Windows Files from WSL</h3>
+            <p>Your C: drive is mounted inside WSL at <code>/mnt/c</code>. You can access any file using:</p>
+            <pre><code>cd /mnt/c/Users/&lt;YourWindowsUsername&gt;/</code></pre>
+
+            <h3>Accessing WSL Files from Windows</h3>
+            <p>Open File Explorer and type:</p>
+            <pre><code>\\wsl$</code></pre>
+            <p>You'll see all installed Linux distributions and their file systems.</p>
         </div>
         
         <div id="part2" class="section">
-            <h2>Part 2: Managing Distros & Configuration</h2>
-        
-            <h3>List Installed Distros</h3>
-            <pre><code>wsl --list --verbose</code></pre>
-            <p>This lists all installed distros along with their versions and states.</p>
-        
-            <h3>Install a New Distro</h3>
-            <pre><code>wsl --install -d <em>DistroName</em></code></pre>
-            <p>Example: <code>wsl --install -d kali-linux</code></p>
-        
-            <h3>Set Default Distro</h3>
-            <pre><code>wsl --set-default <em>DistroName</em></code></pre>
-            <p>New WSL sessions will start using this distro by default.</p>
-        
-            <h3>Convert Distro Version (WSL 1 &lt;-&gt; WSL 2)</h3>
-            <pre><code>wsl --set-version <em>DistroName</em> 2</code></pre>
-            <p>Change <code>2</code> to <code>1</code> if you want to downgrade to WSL 1.</p>
-        
-            <h3>Unregister (Delete) a Distro</h3>
-            <pre><code>wsl --unregister <em>DistroName</em></code></pre>
-            <p>This will permanently delete the distro and its data. Be careful!</p>
-        
-            <div class="note warning">
-                <p><strong>Warning:</strong> Unregistering a distro cannot be undone. All files and settings inside that distro will be lost.</p>
+            <h2>Part 2: Managing WSL Distros and System Configuration</h2>
+
+            <h3>Listing Installed Distros</h3>
+            <p>To see all the Linux distributions you have installed:</p>
+            <pre><code>wsl --list</code></pre>
+            <p>or</p>
+            <pre><code>wsl -l</code></pre>
+
+            <h4>Example Output:</h4>
+            <pre><code>Windows Subsystem for Linux Distributions:
+Ubuntu (Default)
+Debian
+Kali-Linux</code></pre>
+
+            <p>To see which ones are currently <strong>running</strong>:</p>
+            <pre><code>wsl --list --running</code></pre>
+
+            <p>To see versions (WSL 1 or 2) of each installed distro:</p>
+            <pre><code>wsl -l -v</code></pre>
+
+            <h3>Setting a Default Distro</h3>
+            <p>If you use one distro more than others, make it the default:</p>
+            <pre><code>wsl --set-default &lt;DistroName&gt;</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --set-default Debian</code></pre>
+            <p>Now, running just <code>wsl</code> will launch Debian.</p>
+
+            <h3>Uninstalling a Distro</h3>
+            <p>To remove (unregister) a distro and <strong>delete all its data</strong>:</p>
+            <pre><code>wsl --unregister &lt;DistroName&gt;</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --unregister Ubuntu</code></pre>
+
+            <div class="warning">
+                <p><strong>Warning:</strong> This permanently deletes the Linux file system for that distro!</p>
             </div>
-        
-            <h3>Launch Specific Distro</h3>
-            <pre><code>wsl -d <em>DistroName</em></code></pre>
-            <p>Directly launches the chosen Linux distribution.</p>
-        
-            <h3>Set WSL Default Version (Global)</h3>
+
+            <h3>Exporting and Backing Up a Distro</h3>
+            <p>To create a backup of your entire Linux distro:</p>
+            <pre><code>wsl --export &lt;DistroName&gt; &lt;PathToFile.tar&gt;</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --export Ubuntu ubuntu-backup.tar</code></pre>
+            <p>This file can be stored and later restored.</p>
+
+            <h3>Importing a Distro from Backup</h3>
+            <p>To import your saved distro to a new location:</p>
+            <pre><code>wsl --import &lt;NewDistroName&gt; &lt;InstallLocation&gt; &lt;BackupFile.tar&gt;</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --import UbuntuBackup C:\WSL\Ubuntu\ ubuntu-backup.tar</code></pre>
+
+            <h3>Changing WSL Version (1 or 2)</h3>
+            <p>You can choose which version each distro uses:</p>
+            <pre><code>wsl --set-version &lt;DistroName&gt; &lt;1|2&gt;</code></pre>
+            <p>Example:</p>
+            <pre><code>wsl --set-version Kali-Linux 2</code></pre>
+
+            <p>To set <strong>WSL 2</strong> as the default for all new installs:</p>
             <pre><code>wsl --set-default-version 2</code></pre>
-            <p>This sets WSL 2 as the default version for all future installs.</p>
-        
-            <h3>Open WSL Config File</h3>
-            <p>To customize WSL behavior (like setting memory limits or auto-mounting drives), create or edit this file:</p>
-            <pre><code>C:\Users\YourName\.wslconfig</code></pre>
-        
-            <h4>Sample <code>.wslconfig</code> File:</h4>
-            <pre><code>[wsl2]
-        memory=4GB
-        processors=2
-        localhostForwarding=true</code></pre>
-            <p>This example limits WSL 2 to 4GB RAM and 2 CPU cores.</p>
+
+            <h3>Shutting Down and Terminating</h3>
+            <ul>
+                <li><strong>Shut down all WSL instances:</strong>
+                    <pre><code>wsl --shutdown</code></pre>
+                </li>
+                <li><strong>Terminate a specific distro:</strong>
+                    <pre><code>wsl --terminate &lt;DistroName&gt;</code></pre>
+                </li>
+            </ul>
+            <p>This is useful if something hangs or you want to free up resources.</p>
+
+            <h3>Checking System Configuration</h3>
+            <p>Run this to see:</p>
+            <ul>
+                <li>Default distro</li>
+                <li>Default version</li>
+                <li>Kernel version</li>
+                <li>Whether WSL is running</li>
+            </ul>
+            <pre><code>wsl --status</code></pre>
+
+            <h3>Updating the WSL Kernel</h3>
+            <p>Microsoft occasionally updates the WSL 2 kernel. To update:</p>
+            <pre><code>wsl --update</code></pre>
+            <p>If something breaks and you want to roll back:</p>
+            <pre><code>wsl --update rollback</code></pre>
+
+            <h3>Full Help Command</h3>
+            <p>To see everything WSL can do, use:</p>
+            <pre><code>wsl --help</code></pre>
+            <p>This gives a list of all commands and options.</p>
         </div>
         
         <div id="part3" class="section">
-            <h2>Part 3: Daily WSL Usage & Cool Tricks</h2>
-        
-            <h3>Access Windows Files from WSL</h3>
-            <pre><code>cd /mnt/c/Users/YourName/Desktop</code></pre>
-            <p>Navigate into your Windows drives easily via <code>/mnt/c/</code>, <code>/mnt/d/</code>, etc.</p>
-        
-            <h3>Open Files or URLs in Windows</h3>
-            <pre><code>explorer.exe .</code></pre>
-            <p>This opens the current WSL directory in File Explorer.</p>
-        
-            <h3>Run Windows Apps from WSL</h3>
-            <pre><code>notepad.exe myscript.sh</code></pre>
-            <p>Yes! You can launch Windows apps directly from your Linux terminal.</p>
-        
-            <h3>Use Linux Commands in PowerShell</h3>
-            <pre><code>wsl ls -la</code></pre>
-            <p>Run WSL commands without launching the WSL shell.</p>
-        
-            <h3>Share Clipboard Between Windows & WSL</h3>
-            <pre><code>cat file.txt | clip.exe</code></pre>
-            <p>This sends the output of <code>file.txt</code> to the Windows clipboard!</p>
-        
-            <h3>Use SSH Inside WSL</h3>
-            <pre><code>ssh user@hostname</code></pre>
-            <p>Install your SSH keys inside WSL and securely connect to servers like a boss.</p>
-        
-            <h3>Running GUI Linux Apps (WSLg)</h3>
-            <p>On WSLg (Windows 11), you can run GUI apps directly.</p>
-            <pre><code>gedit</code></pre>
-            <p>Opens the gedit GUI text editor right from the terminal!</p>
-        
-            <div class="tip">
-                <p><strong>Pro Tip:</strong> You can pin your favorite WSL apps or scripts to the Start Menu or taskbar!</p>
+            <h2>Part 3: Interoperability, File Access & Advanced WSL Configuration</h2>
+
+            <h3>1. Accessing Windows Files from Linux (WSL)</h3>
+            <p>Inside your WSL terminal, Windows drives are mounted under <code>/mnt/</code>.</p>
+
+            <h4>Examples:</h4>
+            <table class="command-table">
+                <tr>
+                    <th>Action</th>
+                    <th>Command</th>
+                </tr>
+                <tr>
+                    <td>Navigate to <code>C:\Users\YourName\Downloads</code></td>
+                    <td><code>cd /mnt/c/Users/YourName/Downloads</code></td>
+                </tr>
+                <tr>
+                    <td>List contents of D: drive</td>
+                    <td><code>ls /mnt/d</code></td>
+                </tr>
+            </table>
+
+            <h3>2. Accessing WSL Files from Windows</h3>
+            <p>To explore your WSL file system through Windows File Explorer:</p>
+            <ol>
+                <li>Press <code>Win + R</code></li>
+                <li>Type: <code>\\wsl$</code></li>
+                <li>Hit Enter</li>
+            </ol>
+            <p>This opens a network-style view of all installed Linux distros. You can drag/drop files in and out from here.</p>
+
+            <h3>3. Running Linux Commands from Windows (PowerShell or CMD)</h3>
+            <p>You can execute Linux commands directly from a Windows terminal using:</p>
+            <pre><code>wsl &lt;linux-command&gt;</code></pre>
+
+            <h4>Examples:</h4>
+            <pre><code>wsl ls -la
+wsl cat /etc/os-release</code></pre>
+
+            <p>To run a Linux command in a specific distro:</p>
+            <pre><code>wsl -d &lt;DistroName&gt; &lt;command&gt;</code></pre>
+
+            <h3>4. Running Windows Programs from Linux (WSL)</h3>
+            <p>Inside WSL, you can launch Windows apps using their <code>.exe</code> names.</p>
+
+            <h4>Examples:</h4>
+            <pre><code>notepad.exe
+code.exe            # Opens VS Code
+explorer.exe .      # Opens current directory in File Explorer</code></pre>
+
+            <p>You can also use Windows paths in commands, just prefix them with <code>/mnt/</code>:</p>
+            <pre><code>cat /mnt/c/Users/YourName/Desktop/note.txt</code></pre>
+
+            <h3>5. Advanced Configuration Files</h3>
+            <p>WSL supports two config files for custom behavior:</p>
+
+            <h4>A. Global Config: <code>.wslconfig</code></h4>
+            <p>Location: <code>C:\Users\&lt;YourWindowsUsername&gt;\.wslconfig</code></p>
+            <p>This file affects <strong>all WSL 2</strong> distributions.</p>
+
+            <h5>Example <code>.wslconfig</code>:</h5>
+            <pre><code>[wsl2]
+memory=4GB
+processors=2
+swap=2GB
+localhostForwarding=true</code></pre>
+
+            <table class="command-table">
+                <tr>
+                    <th>Option</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>memory</code></td>
+                    <td>Max RAM WSL can use</td>
+                </tr>
+                <tr>
+                    <td><code>processors</code></td>
+                    <td>Number of CPU cores</td>
+                </tr>
+                <tr>
+                    <td><code>swap</code></td>
+                    <td>Swap file size</td>
+                </tr>
+                <tr>
+                    <td><code>localhostForwarding</code></td>
+                    <td>Enables Windows to Linux networking</td>
+                </tr>
+            </table>
+
+            <div class="note">
+                <p>After editing this file, restart WSL:</p>
+                <pre><code>wsl --shutdown</code></pre>
             </div>
-        
-            <h3>Bonus: Add WSL to VS Code</h3>
-            <p>Install the "Remote - WSL" extension in VS Code to open projects inside WSL seamlessly.</p>
+
+            <h4>B. Per-Distro Config: <code>wsl.conf</code></h4>
+            <p>Location: Inside each distro at <code>/etc/wsl.conf</code></p>
+
+            <h5>Example <code>wsl.conf</code>:</h5>
+            <pre><code>[automount]
+enabled = true
+root = /mnt/
+options = "metadata,umask=22,fmask=11"
+
+[network]
+generateResolvConf = false</code></pre>
+
+            <p>This file controls:</p>
             <ul>
-                <li>Open VS Code</li>
-                <li>Click Extensions & search <strong>Remote - WSL</strong></li>
-                <li>Install and reload!</li>
+                <li>How drives are mounted</li>
+                <li>File permission behavior</li>
+                <li>Network settings</li>
             </ul>
-        
-            <h3>Back Up a WSL Distro</h3>
-            <pre><code>wsl --export <em>DistroName</em> backup.tar</code></pre>
-            <p>Save your distro to a tarball. Later, you can restore it with <code>--import</code>.</p>
-        
-            <h3>Quick WSL Restart (Fixes bugs sometimes!)</h3>
-            <pre><code>wsl --shutdown</code></pre>
-            <p>Closes all running WSL instances cleanly.</p>
-        
-            <div class="note info">
-                <p><strong>Heads up:</strong> WSL is rapidly evolving—keep your system updated to enjoy the latest features!</p>
+
+            <div class="note">
+                <p>Restart the WSL distro after editing this config.</p>
             </div>
+
+            <h3>6. Tips & Best Practices</h3>
+            <ul>
+                <li><strong>Use WSL 2</strong> unless you have specific needs for WSL 1.</li>
+                <li><strong>Keep backups</strong> of your important Linux distros using <code>--export</code>.</li>
+                <li>Use <strong>VS Code with WSL</strong> (<code>code .</code>) for full-featured Linux dev on Windows.</li>
+                <li>Run <code>sudo apt update && sudo apt upgrade</code> frequently to keep Linux packages updated.</li>
+                <li>Avoid editing Linux files using Windows tools directly (use <code>/mnt/</code> instead).</li>
+            </ul>
+
+            <h3>7. Troubleshooting Common Issues</h3>
+            <table class="command-table">
+                <tr>
+                    <th>Problem</th>
+                    <th>Solution</th>
+                </tr>
+                <tr>
+                    <td>WSL not launching</td>
+                    <td>Restart computer or run <code>wsl --shutdown</code></td>
+                </tr>
+                <tr>
+                    <td>File permission errors</td>
+                    <td>Check mount options in <code>wsl.conf</code></td>
+                </tr>
+                <tr>
+                    <td>Can't access Windows files</td>
+                    <td>Try navigating to <code>/mnt/c/Users/</code></td>
+                </tr>
+                <tr>
+                    <td>WSL commands not recognized</td>
+                    <td>Make sure Windows features are enabled (see Part 1)</td>
+                </tr>
+            </table>
+
+            <h3>Want More?</h3>
+            <div class="resources-grid">
+                <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="resource-content">
+                        <h4>Official WSL Docs</h4>
+                        <p>Comprehensive documentation from Microsoft</p>
+                    </div>
+                    <div class="resource-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/microsoft/WSL" target="_blank" class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="resource-content">
+                        <h4>WSL GitHub Repo</h4>
+                        <p>Source code and latest updates</p>
+                    </div>
+                    <div class="resource-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/microsoft/WSL/issues" target="_blank" class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="resource-content">
+                        <h4>WSL Issues & Discussions</h4>
+                        <p>Community support and feedback</p>
+                    </div>
+                    <div class="resource-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+
+            <h3>Conclusion</h3>
+            <p>You've now mastered:</p>
+            <ul>
+                <li>Installing and launching WSL</li>
+                <li>Managing multiple distros</li>
+                <li>Running commands across Linux and Windows</li>
+                <li>Configuring WSL to match your system and workflow</li>
+            </ul>
+            <p>This guide is made to be saved, starred and shared. Happy coding!</p>
         </div>
         
     </div>
